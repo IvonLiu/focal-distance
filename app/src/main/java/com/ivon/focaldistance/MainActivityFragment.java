@@ -52,7 +52,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -266,6 +268,10 @@ public class MainActivityFragment extends Fragment
      */
     private boolean mFlashSupported;
 
+    private List<Map<Double, Double>> mDistancesMap = new ArrayList<>();
+
+    int counter = 0;
+
     /**
      * A {@link CameraCaptureSession.CaptureCallback} that handles events related to JPEG capture.
      */
@@ -276,7 +282,21 @@ public class MainActivityFragment extends Fragment
             switch (mState) {
                 case STATE_PREVIEW: {
                     // We have nothing to do when the camera preview is working normally.
-                    Log.i("STATE PREVIEW", String.valueOf(result.get(CaptureResult.LENS_FOCUS_DISTANCE)));
+                    double f = result.get(CaptureResult.LENS_FOCAL_LENGTH);
+                    double di = result.get(CaptureResult.LENS_FOCUS_DISTANCE);
+                    //double objectDistance = CameraUtils.getObjectDistance(f, di);
+                    double objectDistance = CameraUtils.getObjectDistance(di);
+                    Log.i("STATE PREVIEW", "f = " + f + ", di = " + di + ", do = " + objectDistance);
+
+                    counter++;
+                    if (counter == 100) {
+                        Log.i("STATE PREVIEW", "Adding to map");
+                        Map<Double, Double> map = new HashMap<>();
+                        map.put(di, objectDistance);
+                        mDistancesMap.add(map);
+                        counter = 0;
+                    }
+
                     break;
                 }
                 case STATE_WAITING_LOCK: {
@@ -808,6 +828,7 @@ public class MainActivityFragment extends Fragment
      * {@link #mCaptureCallback} from both {@link #lockFocus()}.
      */
     private void captureStillPicture() {
+        Log.i("PRINTING MAP", mDistancesMap.toString());
         try {
             final Activity activity = getActivity();
             if (null == activity || null == mCameraDevice) {
