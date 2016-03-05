@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,36 +8,19 @@
     <com.ivon.focaldistance.AutoFitTextureView
         android:id="@+id/texture"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/focus_box"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/info_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:textColor="@android:color/white"/>
 
-    <FrameLayout
-        android:id="@+id/control"
-        android:layout_width="match_parent"
-        android:layout_height="112dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="@android:color/holo_blue_bright">
-
-        <Button
-            android:id="@+id/picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Picture" />
-
-        <ImageButton
-            android:id="@+id/info"
-            android:contentDescription="Info"
-            style="@android:style/Widget.Material.Light.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:padding="20dp"
-            android:src="@mipmap/ic_launcher" />
-
-    </FrameLayout>
-
-</RelativeLayout>
+</FrameLayout>
 

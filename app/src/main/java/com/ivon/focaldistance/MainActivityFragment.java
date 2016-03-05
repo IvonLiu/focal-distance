@@ -42,6 +42,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -284,9 +285,18 @@ public class MainActivityFragment extends Fragment
                     // We have nothing to do when the camera preview is working normally.
                     double f = result.get(CaptureResult.LENS_FOCAL_LENGTH);
                     double di = result.get(CaptureResult.LENS_FOCUS_DISTANCE);
-                    //double objectDistance = CameraUtils.getObjectDistance(f, di);
-                    double objectDistance = CameraUtils.getObjectDistance(di);
+                    final double objectDistance = CameraUtils.getObjectDistance(f, di);
+                    //final double objectDistance = CameraUtils.getObjectDistance(di);
                     Log.i("STATE PREVIEW", "f = " + f + ", di = " + di + ", do = " + objectDistance);
+
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mInfoView.setText("Distance:\n" + objectDistance);
+                            }
+                        });
+                    }
 
                     counter++;
                     if (counter == 100) {
@@ -425,6 +435,8 @@ public class MainActivityFragment extends Fragment
         return new MainActivityFragment();
     }
 
+    private TextView mInfoView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -433,9 +445,8 @@ public class MainActivityFragment extends Fragment
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.picture).setOnClickListener(this);
-        view.findViewById(R.id.info).setOnClickListener(this);
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        mInfoView = (TextView) view.findViewById(R.id.info_text);
     }
 
     @Override
@@ -891,22 +902,7 @@ public class MainActivityFragment extends Fragment
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.picture: {
-                takePicture();
-                break;
-            }
-            case R.id.info: {
-                Activity activity = getActivity();
-                if (null != activity) {
-                    new AlertDialog.Builder(activity)
-                            .setMessage("Intro message")
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show();
-                }
-                break;
-            }
-        }
+
     }
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
